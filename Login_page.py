@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 import re
 
 
-def password_checker(password1, password2):
+def password_checker(password1, password2):  # checks password validity and returns True or False
     if password1 != password2:
         sg.popup(custom_text="Passwords do not match", any_key_closes=True)
 
@@ -31,14 +31,20 @@ def password_checker(password1, password2):
                 break
             else:
                 flag = 0
-                return
+                return True
 
         if flag == -1:
             sg.popup(custom_text="Password invalid, Please include at least 8 characters, upper and lowercase "
                                  "letters, numbers and special characters.")
+            return False
 
 
-def registration_page():
+def handle_user_info(user_info):  # handles user information from registration page.
+    # puts most of it in a text file and hashes the password for security
+    print("hello")
+
+
+def registration_page():    # Allows the user to register and outputs user info and passwords to relevant functions
     sg.theme("DarkAmber")
 
     layout = [[sg.Text("First Name:"), sg.In(size=30, pad=(10, 5), key=1)],
@@ -57,14 +63,19 @@ def registration_page():
 
         if event == "Register":
             user_info = []
-            for x in range(1, 8):
+            for x in range(1, 7):
                 user_info.append(values[x])
             print(user_info)
-
-            password_checker(user_info[5], user_info[6])
+            if password_checker(values[6], values[7]):
+                window.close()
+                handle_user_info(user_info)
+            else:
+                pass
 
         if event == sg.WIN_CLOSED:
             break
+
+    window.close()
 
 
 def Login_page():
