@@ -1,2 +1,7 @@
 exec(open("Fixture_download.py").read())
-exec(open("login_page.py").read())
+import Login_page
+
+Login_page.Login_page()
+
+
+
