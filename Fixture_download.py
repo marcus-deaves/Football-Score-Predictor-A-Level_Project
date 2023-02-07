@@ -2,7 +2,6 @@ import csv
 from datetime import datetime
 import requests
 
-
 url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
 querystring = {"league": "39", "season": "2022"}
 headers = {"X-RapidAPI-Key": "aa9925016amshd67f07be972ba68p14f83fjsn58f25779d4b1",
@@ -38,9 +37,10 @@ for x in range(len(list_of_fixtures[0])):
         score_away = "no score"
     match_info.append([game_week, date, time, home_team, away_team, venue, score_home, score_away, winner])
 
-with open("game_table.csv", "w", newline="") as f:
+with open("master_table.csv", "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerows(match_info)
+
 
 def write_to_file(filename, output):
     with open(filename, "w", newline="") as f:
@@ -48,11 +48,11 @@ def write_to_file(filename, output):
         writer.writerows(output)
 
 
-file = open("game_table.csv", "r")
+file = open("master_table.csv", "r")
 fixture_dict = list(csv.DictReader(file, delimiter=","))
 file.close()
 
-with open("game_table.csv", newline='') as file:
+with open("master_table.csv", newline='') as file:
     game_list = list(csv.reader(file))
 
 fixture_list = []
