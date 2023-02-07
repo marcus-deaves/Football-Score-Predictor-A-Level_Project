@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
 import re
+import bcrypt
+from Private_info import salt
 
 
 def password_checker(password1, password2):  # checks password validity and returns True or False
@@ -41,10 +43,19 @@ def password_checker(password1, password2):  # checks password validity and retu
 
 def handle_user_info(user_info):  # handles user information from registration page.
     # puts most of it in a text file and hashes the password for security
-    print("hello")
+    keys = ["First name", "Last name", "Username", "Favourite team", "Email", "password"]
+    user_info_dictionary = dict(zip(keys, user_info))
+    print(user_info_dictionary)
+
+    # hashing algorithm
+    password = user_info_dictionary["password"].encode("utf-8")
+    hashed_password = bcrypt.hashpw(password, salt)
+    print(hashed_password)
+    user_info_dictionary["password"] = hashed_password
+    print(user_info_dictionary)
 
 
-def registration_page():    # Allows the user to register and outputs user info and passwords to relevant functions
+def registration_page():  # Allows the user to register and outputs user info and passwords to relevant functions
     sg.theme("DarkAmber")
 
     layout = [[sg.Text("First Name:"), sg.In(size=30, pad=(10, 5), key=1)],

@@ -1,10 +1,11 @@
 import csv
 from datetime import datetime
 import requests
+from Private_info import apikey
 
 url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
 querystring = {"league": "39", "season": "2022"}
-headers = {"X-RapidAPI-Key": "aa9925016amshd67f07be972ba68p14f83fjsn58f25779d4b1",
+headers = {"X-RapidAPI-Key": apikey,
            "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"}
 
 response = requests.request("GET", url, headers=headers, params=querystring)
