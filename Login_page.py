@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 import re
 import bcrypt
 from Private_info import salt
+import csv
 
 
 def password_checker(password1, password2):  # checks password validity and returns True or False
@@ -41,18 +42,21 @@ def password_checker(password1, password2):  # checks password validity and retu
             return False
 
 
-def handle_user_info(user_info):  # handles user information from registration page.
+def handle_user_info(user_info_raw):  # handles user information from registration page.
     # puts most of it in a text file and hashes the password for security
-    keys = ["First name", "Last name", "Username", "Favourite team", "Email", "password"]
-    user_info_dictionary = dict(zip(keys, user_info))
-    print(user_info_dictionary)
-
+    user_info = user_info_raw
     # hashing algorithm
-    password = user_info_dictionary["password"].encode("utf-8")
+    password = user_info[5].encode("utf-8")
     hashed_password = bcrypt.hashpw(password, salt)
     print(hashed_password)
-    user_info_dictionary["password"] = hashed_password
-    print(user_info_dictionary)
+    user_info[5] = str(hashed_password)
+    print(user_info)
+
+    with open("User_Information.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(user_info)
+
+    Login_page()
 
 
 def registration_page():  # Allows the user to register and outputs user info and passwords to relevant functions
@@ -76,7 +80,6 @@ def registration_page():  # Allows the user to register and outputs user info an
             user_info = []
             for x in range(1, 7):
                 user_info.append(values[x])
-            print(user_info)
             if password_checker(values[6], values[7]):
                 window.close()
                 handle_user_info(user_info)
@@ -107,6 +110,29 @@ def Login_page():
 
         if event == sg.WIN_CLOSED:
             break
+
+        if event == "Login":
+
+            user_info_dict = []
+
+            username = values[0]
+            password = values[1]
+
+            password = password.encode("utf-8")
+            hashed_password = bcrypt.hashpw(password, salt)
+
+            with open('User_Information.csv', mode='r') as csv_file:
+                csv_reader = csv.DictReader(csv_file)
+                for row in csv_reader:
+                    user_info_dict.append(row)
+            success = False
+            for x in range(len(user_info_dict)):
+                if user_info_dict[x]["Username"] == username and user_info_dict[x]["password"] == str(hashed_password):
+                    sg.popup(custom_text="Login Successful", any_key_closes=True)
+                    success = True
+                    window.close()
+            if not success:
+                sg.popup(custom_text="Username or Password invalid. Please try again or register an account.")
 
         if event == "Register":
             window.close()
