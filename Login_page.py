@@ -26,7 +26,7 @@ def password_checker(password1, password2):  # checks password validity and retu
             elif not re.search("[0-9]", password):
                 flag = -1
                 break
-            elif not re.search("[_@$!£%^&*()?:<>,./'~}{]", password):
+            elif not re.search("[_@$!£%^&*()?:<>,./'~}{-]", password):
                 flag = -1
                 break
             elif re.search("\s", password):
@@ -48,9 +48,7 @@ def handle_user_info(user_info_raw):  # handles user information from registrati
     # hashing algorithm
     password = user_info[5].encode("utf-8")
     hashed_password = bcrypt.hashpw(password, salt)
-    print(hashed_password)
     user_info[5] = str(hashed_password)
-    print(user_info)
 
     with open("User_Information.csv", "a", newline="") as f:
         writer = csv.writer(f)
@@ -133,6 +131,9 @@ def Login_page():
                     window.close()
             if not success:
                 sg.popup(custom_text="Username or Password invalid. Please try again or register an account.")
+                window.close()
+                Login_page()
+            return
 
         if event == "Register":
             window.close()

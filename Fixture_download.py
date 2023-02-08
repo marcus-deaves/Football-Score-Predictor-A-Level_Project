@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 from Private_info import apikey
 
+
 url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
 querystring = {"league": "39", "season": "2022"}
 headers = {"X-RapidAPI-Key": apikey,
