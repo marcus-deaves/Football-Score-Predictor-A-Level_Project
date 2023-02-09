@@ -215,7 +215,7 @@ game_week,date,time,home_team,away_team,venue,score_home,score_away,winner
 22,2023-02-04,17:30:00,Newcastle,West Ham,St. James' Park,1,1,draw
 22,2023-02-05,14:00:00,Nottingham Forest,Leeds,The City Ground,1,0,Nottingham Forest
 22,2023-02-05,16:30:00,Tottenham,Manchester City,Tottenham Hotspur Stadium,1,0,Tottenham
-8,2023-02-08,20:00:00,Manchester United,Leeds,Old Trafford,2,2,draw6
+8,2023-02-08,20:00:00,Manchester United,Leeds,Old Trafford,2,2,draw
 23,2023-02-11,12:30:00,West Ham,Chelsea,London Stadium,no score,no score,not played
 23,2023-02-11,15:00:00,Arsenal,Brentford,Emirates Stadium,no score,no score,not played
 23,2023-02-11,15:00:00,Crystal Palace,Brighton,Selhurst Park,no score,no score,not played

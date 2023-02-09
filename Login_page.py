@@ -4,6 +4,37 @@ import bcrypt
 from Private_info import salt
 import csv
 
+team_list = ["Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton", "Chelsea", "Crystal Palace", "Everton",
+             "Fulham", "Leeds", "Leicester", "Liverpool", "Manchester City", "Manchester United", "Newcastle",
+             "Nottingham Forest", "Southampton", "Tottenham", "West Ham", "Wolves"]
+
+
+def login(values, window):
+    user_info_dict = []
+
+    username = values["username"]
+    password = values["password"]
+
+    password = password.encode("utf-8")
+    hashed_password = bcrypt.hashpw(password, salt)
+
+    with open('User_Information.csv', mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            user_info_dict.append(row)
+    success = False
+    for x in range(len(user_info_dict)):
+        if user_info_dict[x]["Username"] == username and user_info_dict[x]["password"] == str(hashed_password):
+            sg.popup(custom_text="Login Successful", any_key_closes=True)
+            success = True
+            window.close()
+            return x
+    if not success:
+        sg.popup(custom_text="Username or Password invalid. Please try again or register an account.")
+        window.close()
+        Login_page()
+    return
+
 
 def password_checker(password1, password2):  # checks password validity and returns True or False
     if password1 != password2:
@@ -63,7 +94,7 @@ def registration_page():  # Allows the user to register and outputs user info an
     layout = [[sg.Text("First Name:"), sg.In(size=30, pad=(10, 5), key=1)],
               [sg.Text("Last Name:"), sg.In(size=30, pad=(10, 5), key=2)],
               [sg.Text("Username:"), sg.In(size=30, pad=(10, 5), key=3)],
-              [sg.Text("Favourite Team"), sg.In(size=30, pad=(10, 5), key=4)],
+              [sg.Text("Favourite Team"), sg.Combo(team_list, size=28, pad=(10, 5), key=4, readonly=True)],
               [sg.Text("Email:"), sg.In(size=30, pad=(10, 5), key=5)],
               [sg.Text("Password:"), sg.In(size=30, pad=(10, 5), key=6, password_char="·")],
               [sg.Text("Confirm password"), sg.In(size=30, pad=(10, 5), key=7, password_char="·")],
@@ -85,7 +116,7 @@ def registration_page():  # Allows the user to register and outputs user info an
                 pass
 
         if event == sg.WIN_CLOSED:
-            break
+            quit()
 
     window.close()
 
@@ -95,47 +126,26 @@ def Login_page():
 
     layout = [
         [sg.Text("LOGIN OR REGISTER", font=("Bold", 25), auto_size_text=True)],
-        [sg.Text("Username:"), sg.In(s=30)],
-        [sg.Text("Password:"), sg.In(password_char="*", s=30, pad=8)],
+        [sg.Text("Username:"), sg.In(s=30, key="username")],
+        [sg.Text("Password:"), sg.In(password_char="*", s=30, pad=8, key="password")],
         [sg.Button(button_text="Login", size=10),
          sg.Button(button_text="Register", size=10)]
     ]
 
-    window = sg.Window(title="Football Score Predictor", layout=layout, margins=(50, 75), element_justification="c")
-
+    window = sg.Window(title="Football Score Predictor", layout=layout, margins=(50, 75), element_justification="c", finalize=True)
+    window["password"].bind("<Return>", "_Enter")
     while True:
         event, values = window.read()
 
         if event == sg.WIN_CLOSED:
-            break
-
-        if event == "Login":
-
-            user_info_dict = []
-
-            username = values[0]
-            password = values[1]
-
-            password = password.encode("utf-8")
-            hashed_password = bcrypt.hashpw(password, salt)
-
-            with open('User_Information.csv', mode='r') as csv_file:
-                csv_reader = csv.DictReader(csv_file)
-                for row in csv_reader:
-                    user_info_dict.append(row)
-            success = False
-            for x in range(len(user_info_dict)):
-                if user_info_dict[x]["Username"] == username and user_info_dict[x]["password"] == str(hashed_password):
-                    sg.popup(custom_text="Login Successful", any_key_closes=True)
-                    success = True
-                    window.close()
-            if not success:
-                sg.popup(custom_text="Username or Password invalid. Please try again or register an account.")
-                window.close()
-                Login_page()
-            return
-
-        if event == "Register":
+            quit()
+        elif event == "password" + "_Enter":
+            x = login(values, window)
+            return x
+        elif event == "Login":
+            x = login(values, window)
+            return x
+        elif event == "Register":
             window.close()
             registration_page()
 

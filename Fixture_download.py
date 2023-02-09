@@ -37,11 +37,11 @@ for x in range(len(list_of_fixtures[0])):
         score_home = "no score"
         score_away = "no score"
     match_info.append([game_week, date, time, home_team, away_team, venue, score_home, score_away, winner, timestamp])
-    print(type(timestamp))
 
 match_info = sorted(match_info, key=lambda l: l[9], reverse=False)
 for i in range(len(match_info)):
     match_info[i].pop()
+
 with open("master_table.csv", "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerows(match_info)
