@@ -3,7 +3,6 @@ from datetime import datetime
 import requests
 from Private_info import apikey
 
-
 url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
 querystring = {"league": "39", "season": "2022"}
 headers = {"X-RapidAPI-Key": apikey,
@@ -14,7 +13,7 @@ response = requests.request("GET", url, headers=headers, params=querystring)
 fixture_dictionary = response.json()
 list_of_fixtures = [fixture_dictionary["response"]]
 
-match_info = [["game_week", "date", "time", "home_team", "away_team", "venue", "score_home", "score_away", "winner"]]
+match_info = [["game_week", "date", "time", "home_team", "away_team", "venue", "score_home", "score_away", "winner", 0]]
 for x in range(len(list_of_fixtures[0])):
     game_week = list_of_fixtures[0][x]["league"]["round"]
     game_week = game_week.split()[3]
@@ -37,8 +36,12 @@ for x in range(len(list_of_fixtures[0])):
         winner = "not played"
         score_home = "no score"
         score_away = "no score"
-    match_info.append([game_week, date, time, home_team, away_team, venue, score_home, score_away, winner])
+    match_info.append([game_week, date, time, home_team, away_team, venue, score_home, score_away, winner, timestamp])
+    print(type(timestamp))
 
+match_info = sorted(match_info, key=lambda l: l[9], reverse=False)
+for i in range(len(match_info)):
+    match_info[i].pop()
 with open("master_table.csv", "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerows(match_info)
