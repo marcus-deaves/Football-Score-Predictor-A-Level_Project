@@ -62,7 +62,7 @@ def handle_user_info(user_info_raw):  # handles user information from registrati
 
 
 def registration_page():  # Allows the user to register and outputs user info and passwords to relevant functions
-    sg.theme("DarkAmber")
+    sg.theme("BlueMono")
 
     layout = [[sg.Text("First Name:"), sg.In(size=30, pad=(10, 5), key=1)],
               [sg.Text("Last Name:"), sg.In(size=30, pad=(10, 5), key=2)],
@@ -96,7 +96,7 @@ def registration_page():  # Allows the user to register and outputs user info an
 
 def Login_page():
 
-    sg.theme("DarkAmber")
+    sg.theme("BlueMono")
 
     layout = [
         [sg.Text("LOGIN OR REGISTER", font=("Bold", 25), auto_size_text=True)],
@@ -128,11 +128,11 @@ def Login_page():
                     user_info_dict.append(row)
             success = False
             for x in range(len(user_info_dict)):
-                if user_info_dict[x]["Username"] == username and user_info_dict[x]["password"] == str(hashed_password):
+                if user_info_dict[x]["Username"] == username and user_info_dict[x]["Password"] == str(hashed_password):
                     sg.popup(custom_text="Login Successful", any_key_closes=True)
                     success = True
                     window.close()
-                    return x
+                    return username
             if not success:
                 sg.popup(custom_text="Username or Password invalid. Please try again or register an account.",
                          auto_close=True, auto_close_duration=20)
@@ -153,11 +153,11 @@ def Login_page():
                     user_info_dict.append(row)
             success = False
             for x in range(len(user_info_dict)):
-                if user_info_dict[x]["Username"] == username and user_info_dict[x]["password"] == str(hashed_password):
+                if user_info_dict[x]["Username"] == username and user_info_dict[x]["Password"] == str(hashed_password):
                     sg.popup(custom_text="Login Successful", any_key_closes=True)
                     success = True
                     window.close()
-                    return x
+                    return username
             if not success:
                 sg.popup(custom_text="Username or Password invalid. Please try again or register an account.",
                          auto_close=True, auto_close_duration=20)

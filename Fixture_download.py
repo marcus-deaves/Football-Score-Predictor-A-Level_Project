@@ -12,8 +12,9 @@ response = requests.request("GET", url, headers=headers, params=querystring)
 
 fixture_dictionary = response.json()
 list_of_fixtures = [fixture_dictionary["response"]]
+print(list_of_fixtures[0][0])
 
-match_info = [["game_week", "date", "time", "home_team", "away_team", "venue", "score_home", "score_away", "winner", 0]]
+match_info = [["game_week", "date", "time", "home_team","away_team", "venue", "score_home", "score_away", "winner", 0]]
 for x in range(len(list_of_fixtures[0])):
     game_week = list_of_fixtures[0][x]["league"]["round"]
     game_week = game_week.split()[3]
@@ -36,7 +37,7 @@ for x in range(len(list_of_fixtures[0])):
         winner = "not played"
         score_home = "no score"
         score_away = "no score"
-    match_info.append([game_week, date, time, home_team, away_team, venue, score_home, score_away, winner, timestamp])
+    match_info.append([game_week, date, time, home_team,away_team,venue, score_home, score_away, winner, timestamp])
 
 match_info = sorted(match_info, key=lambda l: l[9], reverse=False)
 for i in range(len(match_info)):
