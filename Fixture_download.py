@@ -3,41 +3,43 @@ from datetime import datetime
 import requests
 from Private_info import apikey
 
-url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
-querystring = {"league": "39", "season": "2022"}
-headers = {"X-RapidAPI-Key": apikey,
-           "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"}
+## import all the modules that i need
 
-response = requests.request("GET", url, headers=headers, params=querystring)
+url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"  # My API URL
+querystring = {"league": "39", "season": "2022"}  # My query to the API
+headers = {"X-RapidAPI-Key": apikey,
+           "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"}  # The data to input to the API so that it knows whos accessing it.
+
+response = requests.request("GET", url, headers=headers, params=querystring)  # collecting the responce from the API
 
 fixture_dictionary = response.json()
-list_of_fixtures = [fixture_dictionary["response"]]
-print(list_of_fixtures[0][0])
+list_of_fixtures = [fixture_dictionary["response"]][0]
 
-match_info = [["game_week", "date", "time", "home_team","away_team", "venue", "score_home", "score_away", "winner", 0]]
-for x in range(len(list_of_fixtures[0])):
-    game_week = list_of_fixtures[0][x]["league"]["round"]
+match_info = [["game_week", "date", "time", "home_team", "away_team", "venue", "score_home", "score_away", "winner", 0]]
+for x in range(len(list_of_fixtures)):
+    game_week = list_of_fixtures[x]["league"]["round"]
     game_week = game_week.split()[3]
-    timestamp = list_of_fixtures[0][x]["fixture"]["timestamp"]
+    timestamp = list_of_fixtures[x]["fixture"]["timestamp"]
     date_time = str(datetime.fromtimestamp(timestamp))
     date, time = date_time.split()
-    home_team = list_of_fixtures[0][x]["teams"]["home"]["name"]
-    away_team = list_of_fixtures[0][x]["teams"]["away"]["name"]
-    venue = list_of_fixtures[0][x]["fixture"]["venue"]["name"]
-    score_home = list_of_fixtures[0][x]["goals"]["home"]
-    score_away = list_of_fixtures[0][x]["goals"]["away"]
-    if score_home is not None:
-        if score_home > score_away:
+    home_team = list_of_fixtures[x]["teams"]["home"]["name"]
+    away_team = list_of_fixtures[x]["teams"]["away"]["name"]
+    venue = list_of_fixtures[x]["fixture"]["venue"]["name"]
+    score_home = list_of_fixtures[x]["goals"]["home"]
+    score_away = list_of_fixtures[x]["goals"]["away"]
+
+    if list_of_fixtures[x]["fixture"]["status"]["elapsed"] is not None:
+        if list_of_fixtures[x]["teams"]["home"]["winner"]:
             winner = home_team
-        elif score_away > score_home:
+        elif list_of_fixtures[x]["teams"]["away"]["winner"]:
             winner = away_team
-        elif score_away == score_home:
-            winner = "draw"
+        elif list_of_fixtures[x]["teams"]["home"]["winner"] is None:
+            winner = "Draw"
     else:
         winner = "not played"
         score_home = "no score"
         score_away = "no score"
-    match_info.append([game_week, date, time, home_team,away_team,venue, score_home, score_away, winner, timestamp])
+    match_info.append([game_week, date, time, home_team, away_team, venue, score_home, score_away, winner, timestamp])
 
 match_info = sorted(match_info, key=lambda l: l[9], reverse=False)
 for i in range(len(match_info)):
@@ -54,24 +56,17 @@ def write_to_file(filename, output):
         writer.writerows(output)
 
 
-file = open("master_table.csv", "r")
-fixture_dict = list(csv.DictReader(file, delimiter=","))
-file.close()
+fixture_list = [["game_week", "date", "time", "home_team", "away_team", "venue", "score_home", "score_away", "winner"]]
+result_list = [["game_week", "date", "time", "home_team", "away_team", "venue", "score_home", "score_away", "winner"]]
 
-with open("master_table.csv", newline='') as file:
-    game_list = list(csv.reader(file))
+match_info.pop(0)
 
-fixture_list = []
-result_list = []
-
-for x in range(len(game_list)):
-    if game_list[x][8] == "not played":
-        fixture_list.append(game_list[x])
-    elif game_list[x][8] == "winner":
-        fixture_list.append(game_list[x])
-        result_list.append(game_list[x])
+for x in match_info:
+    if x[8] == "not played":
+        result_list.append(x)
     else:
-        result_list.append(game_list[x])
+        fixture_list.append(x)
+
 
 write_to_file("fixture_list.csv", fixture_list)
 write_to_file("result_list.csv", result_list)

@@ -2,9 +2,7 @@ import Login_page
 import PySimpleGUI as sg
 import csv
 
-# Current_Player_Username = Login_page.Login_page()
-Current_Player_Username = "mdeaves11"
-print(Current_Player_Username)
+Current_Player_Username = Login_page.Login_page()
 
 
 class Main_Page():
@@ -23,7 +21,7 @@ class Main_Page():
             ])]
         ]
         quick_user_info = [[sg.Frame(title="Quick Info", layout=quick_user_info_layout)]]
-        whole_layout = [[sg.Column(quick_user_info), sg.Column([[sg.Text("test")]])]]
+        whole_layout = [[sg.Column(quick_user_info), sg.Column([[sg.Text("marcusisfat")]])]]
         window = sg.Window(title="Football Score Predictor", layout=whole_layout, margins=(50, 50))
         while True:
             event, values = window.read()
